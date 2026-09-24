@@ -1,0 +1,14 @@
+
+<%- include("includes/head.ejs") %>
+<body>
+    <div>
+        <%for(let doctor of allDoctors){%>
+            <h1><%=doctor.name%></h1>
+        <%}%>
+    </div>
+    
+
+</body>
+<%-include("includes/footer.ejs")%>
+
+
