@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose").default;
+
 const userSchema = new mongoose.Schema({
-  phone: {
+   email: {
     type: String,
     required: true,
-    unique: true,
-    match: /^[0-9]{10}$/
-  },
-  password: {
-    type: String,
-    required: true
+    unique: true
   },
   role: {
     type: String,
@@ -20,6 +17,8 @@ const userSchema = new mongoose.Schema({
     default: false
   }
 }, { timestamps: true });
+
+userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
