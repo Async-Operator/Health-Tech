@@ -14,9 +14,22 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-const initDB = async()=>{
-    await User.deleteMany({});
-    await User.insertMany(initData.data);
-    console.log("data was initialized");
+const initDB = async () => {
+  await User.deleteMany({});
+
+  for (const data of initData.data) {
+    const user = new User({
+      email: data.email,
+      role: data.role,
+      isVerified: true,
+    });
+
+    await User.register(user, data.password);
+
+    console.log(`Created: ${data.email}`);
+  }
+
+  console.log("Data was initialized");
 };
+
 initDB();

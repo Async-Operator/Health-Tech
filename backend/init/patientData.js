@@ -1,184 +1,295 @@
+const mongoose = require("mongoose");
+
 const samplePatients = [
-    {
-        name: "Adam",
-        email: "adam@gmail.com",
-        phone: "8456909980",
-        village: "Baghanata",
-        age: 19,
-        gender: "male",
-        language: "odia"
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d0"),
+    name: "Rahul Kumar",
+    age: 24,
+    gender: "male",
+    phone: "9876543210",
+
+    location: {
+      village: "Patia",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8182, 20.3548]
+      }
     },
-    {
-        name: "Rahul",
-        email: "rahul@gmail.com",
-        phone: "9123456780",
-        village: "Khordha",
-        age: 24,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: [],
+    allergies: ["Dust"],
+
+    emergencyContact: {
+      name: "Ramesh Kumar",
+      phone: "9876543211"
     },
-    {
-        name: "Priya",
-        email: "priya@gmail.com",
-        phone: "9876543210",
-        village: "Bhubaneswar",
-        age: 22,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d1"),
+    name: "Priya Das",
+    age: 29,
+    gender: "female",
+    phone: "9876543212",
+
+    location: {
+      village: "Sahid Nagar",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8347, 20.2961]
+      }
     },
-    {
-        name: "Sanjay",
-        email: "sanjay@gmail.com",
-        phone: "8765432109",
-        village: "Cuttack",
-        age: 35,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: ["Asthma"],
+    allergies: ["Pollen"],
+
+    emergencyContact: {
+      name: "Amit Das",
+      phone: "9876543213"
     },
-    {
-        name: "Anita",
-        email: "anita@gmail.com",
-        phone: "7890123456",
-        village: "Puri",
-        age: 31,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d2"),
+    name: "Suresh Behera",
+    age: 46,
+    gender: "male",
+    phone: "9876543214",
+
+    location: {
+      village: "Jatni",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.7047, 20.1597]
+      }
     },
-    {
-        name: "Ramesh",
-        email: "ramesh@gmail.com",
-        phone: "9012345678",
-        village: "Jatni",
-        age: 45,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: ["Type 2 Diabetes"],
+    allergies: [],
+
+    emergencyContact: {
+      name: "Mamata Behera",
+      phone: "9876543215"
     },
-    {
-        name: "Sunita",
-        email: "sunita@gmail.com",
-        phone: "8901234567",
-        village: "Nayagarh",
-        age: 39,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d3"),
+    name: "Anjali Sharma",
+    age: 35,
+    gender: "female",
+    phone: "9876543216",
+
+    location: {
+      village: "Nayapalli",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8036, 20.2961]
+      }
     },
-    {
-        name: "Amit",
-        email: "amit@gmail.com",
-        phone: "7891234560",
-        village: "Dhenkanal",
-        age: 28,
-        gender: "male",
-        language: "hindi"
+
+    language: "Hindi",
+    chronicDiseases: ["Hypothyroidism"],
+    allergies: ["Penicillin"],
+
+    emergencyContact: {
+      name: "Rajesh Sharma",
+      phone: "9876543217"
     },
-    {
-        name: "Sneha",
-        email: "sneha@gmail.com",
-        phone: "9123456789",
-        village: "Angul",
-        age: 26,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d4"),
+    name: "Manoj Nayak",
+    age: 52,
+    gender: "male",
+    phone: "9876543218",
+
+    location: {
+      village: "Khandagiri",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.7726, 20.2574]
+      }
     },
-    {
-        name: "Manoj",
-        email: "manoj@gmail.com",
-        phone: "8234567890",
-        village: "Balasore",
-        age: 52,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: ["Hypertension", "Type 2 Diabetes"],
+    allergies: ["Sulfa drugs"],
+
+    emergencyContact: {
+      name: "Sunita Nayak",
+      phone: "9876543219"
     },
-    {
-        name: "Pooja",
-        email: "pooja@gmail.com",
-        phone: "9345678901",
-        village: "Sambalpur",
-        age: 30,
-        gender: "female",
-        language: "hindi"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d5"),
+    name: "Sneha Patra",
+    age: 21,
+    gender: "female",
+    phone: "9876543220",
+
+    location: {
+      village: "Rasulgarh",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8574, 20.3065]
+      }
     },
-    {
-        name: "Deepak",
-        email: "deepak@gmail.com",
-        phone: "8456789012",
-        village: "Berhampur",
-        age: 41,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: [],
+    allergies: [],
+
+    emergencyContact: {
+      name: "Bijay Patra",
+      phone: "9876543221"
     },
-    {
-        name: "Kavita",
-        email: "kavita@gmail.com",
-        phone: "9567890123",
-        village: "Koraput",
-        age: 37,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d6"),
+    name: "Arjun Singh",
+    age: 41,
+    gender: "male",
+    phone: "9876543222",
+
+    location: {
+      village: "Bhubaneswar",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8245, 20.2961]
+      }
     },
-    {
-        name: "Arjun",
-        email: "arjun@gmail.com",
-        phone: "8678901234",
-        village: "Rourkela",
-        age: 20,
-        gender: "male",
-        language: "hindi"
+
+    language: "Hindi",
+    chronicDiseases: ["Hypertension"],
+    allergies: ["Dust"],
+
+    emergencyContact: {
+      name: "Neha Singh",
+      phone: "9876543223"
     },
-    {
-        name: "Meena",
-        email: "meena@gmail.com",
-        phone: "9789012345",
-        village: "Baripada",
-        age: 48,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d7"),
+    name: "Madhuri Mohanty",
+    age: 58,
+    gender: "female",
+    phone: "9876543224",
+
+    location: {
+      village: "Old Town",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8333, 20.2376]
+      }
     },
-    {
-        name: "Vikash",
-        email: "vikash@gmail.com",
-        phone: "8890123456",
-        village: "Jharsuguda",
-        age: 33,
-        gender: "male",
-        language: "odia"
+
+    language: "Odia",
+    chronicDiseases: ["Osteoarthritis", "Hypertension"],
+    allergies: ["Aspirin"],
+
+    emergencyContact: {
+      name: "Rakesh Mohanty",
+      phone: "9876543225"
     },
-    {
-        name: "Laxmi",
-        email: "laxmi@gmail.com",
-        phone: "7901234567",
-        village: "Kendrapara",
-        age: 55,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d8"),
+    name: "Vikash Rout",
+    age: 32,
+    gender: "male",
+    phone: "9876543226",
+
+    location: {
+      village: "Baramunda",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.7867, 20.2757]
+      }
     },
-    {
-        name: "Rohit",
-        email: "rohit@gmail.com",
-        phone: "9015672348",
-        village: "Bargarh",
-        age: 27,
-        gender: "male",
-        language: "hindi"
+
+    language: "Odia",
+    chronicDiseases: [],
+    allergies: ["Peanuts"],
+
+    emergencyContact: {
+      name: "Laxmi Rout",
+      phone: "9876543227"
     },
-    {
-        name: "Sushma",
-        email: "sushma@gmail.com",
-        phone: "8123456709",
-        village: "Jagatsinghpur",
-        age: 43,
-        gender: "female",
-        language: "odia"
+
+    profileCompleted: true
+  },
+
+  {
+    user: new mongoose.Types.ObjectId("6ab904ff36e72830c5c867d9"),
+    name: "Pooja Mishra",
+    age: 38,
+    gender: "female",
+    phone: "9876543228",
+
+    location: {
+      village: "Chandrasekharpur",
+      district: "Khordha",
+      state: "Odisha",
+      coordinates: {
+        type: "Point",
+        coordinates: [85.8245, 20.3347]
+      }
     },
-    {
-        name: "Karan",
-        email: "karan@gmail.com",
-        phone: "9234567810",
-        village: "Rayagada",
-        age: 29,
-        gender: "male",
-        language: "odia"
+
+    language: "Hindi",
+    chronicDiseases: ["Migraine"],
+    allergies: [],
+
+    emergencyContact: {
+      name: "Sanjay Mishra",
+      phone: "9876543229"
     },
+
+    profileCompleted: true
+  }
 ];
 
 module.exports = { data: samplePatients };

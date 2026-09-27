@@ -1,129 +1,159 @@
+const demoUsers = [
 
-const sampleUsers = [
-    // ==================== 10 DOCTORS ====================
-    {
-        phone: "9000000001",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000002",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000003",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000004",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: false
-    },
-    {
-        phone: "9000000005",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000006",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000007",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: false
-    },
-    {
-        phone: "9000000008",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000009",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
-    {
-        phone: "9000000010",
-        password: "Doctor@123",
-        role: "doctor",
-        isVerified: true
-    },
+  {
+    email: "patient1@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient2@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient3@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient4@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient5@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient6@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient7@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient8@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient9@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
+  {
+    email: "patient10@demo.com",
+    role: "patient",
+    password: "Patient@123",
+  },
 
-    // ==================== 7 PATIENTS ====================
-    {
-        phone: "9000000011",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: true
-    },
-    {
-        phone: "9000000012",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: true
-    },
-    {
-        phone: "9000000013",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: false
-    },
-    {
-        phone: "9000000014",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: true
-    },
-    {
-        phone: "9000000015",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: true
-    },
-    {
-        phone: "9000000016",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: false
-    },
-    {
-        phone: "9000000017",
-        password: "Patient@123",
-        role: "patient",
-        isVerified: true
-    },
+///////
+  {
+    email: "doctor1@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor2@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor3@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor4@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor5@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor6@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor7@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor8@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor9@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
+  {
+    email: "doctor10@demo.com",
+    role: "doctor",
+    password: "Doctor@123",
+  },
 
-    // ==================== 3 PHARMACY ====================
-    {
-        phone: "9000000018",
-        password: "Pharmacy@123",
-        role: "pharmacy",
-        isVerified: true
-    },
-    {
-        phone: "9000000019",
-        password: "Pharmacy@123",
-        role: "pharmacy",
-        isVerified: true
-    },
-    {
-        phone: "9000000020",
-        password: "Pharmacy@123",
-        role: "pharmacy",
-        isVerified: false
-    }
+///////
+  {
+    email: "pharmacy1@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy2@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy3@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy4@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy5@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy6@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy7@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy8@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy9@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
+  {
+    email: "pharmacy10@demo.com",
+    role: "pharmacy",
+    password: "Pharmacy@123",
+  },
 ];
-module.exports = { data: sampleUsers };
+
+module.exports = { data: demoUsers };
