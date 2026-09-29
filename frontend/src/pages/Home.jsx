@@ -203,7 +203,6 @@ function Home() {
           <Grid
             container
             className="hero-grid"
-            alignItems="center"
           >
 
             {/* =================================================

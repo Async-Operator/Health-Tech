@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import DoctorListing from "./pages/DoctorListing";
 import DoctorDetail from "./pages/DoctorDetail";
-import Home from "./pages/Home.jsx"
+import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import CreateProfile from "./pages/CreateProfile";
@@ -18,36 +18,76 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import { AuthProvider } from "./context/AuthContext";
 
+function AppContent() {
+  const location = useLocation();
+
+  const isAuthPage =
+    location.pathname === "/login" ||
+    location.pathname === "/signup";
+
+  const showFooter = location.pathname === "/";
+  
+  return (
+    <>
+      {!isAuthPage && <Navbar />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/doctors" element={<DoctorListing />} />
+        <Route path="/doctors/:id" element={<DoctorDetail />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        <Route
+          path="/create-profile"
+          element={
+            <ProtectedRoute>
+              <CreateProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileView />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/edit"
+          element={
+            <ProtectedRoute>
+              <ProfileEdit />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/pharmacy/medicine"
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <ManageMedicine />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+
+      {!isAuthPage && <Footer />}
+
+      <ToastContainer />
+    </>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/doctors" element={<DoctorListing />} />
-          <Route path="/doctors/:id" element={<DoctorDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-
-          <Route path="/create-profile" element={
-            <ProtectedRoute><CreateProfile /></ProtectedRoute>
-          } />
-
-          <Route path="/profile" element={
-            <ProtectedRoute><ProfileView /></ProtectedRoute>
-          } />
-
-          <Route path="/profile/edit" element={
-            <ProtectedRoute><ProfileEdit /></ProtectedRoute>
-          } />
-
-          <Route path="/pharmacy/medicine" element={
-            <ProtectedRoute allowedRoles={["pharmacy"]}><ManageMedicine /></ProtectedRoute>
-          } />
-        </Routes>
-        <Footer />
-        <ToastContainer />
+        <AppContent />
       </BrowserRouter>
     </AuthProvider>
   );

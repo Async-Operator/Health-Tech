@@ -1,0 +1,234 @@
+.create-profile-page {
+  min-height: calc(100vh - 72px);
+  padding: 50px 20px 70px;
+  background: #f7fbfb;
+}
+
+.create-profile-page.MuiContainer-root {
+  max-width: 860px !important;
+  margin-top: 0 !important;
+}
+
+.create-profile-card,
+.create-profile-page .MuiPaper-root {
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1px solid #dceced;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  box-shadow: 0 15px 45px rgba(7, 63, 82, 0.09) !important;
+}
+
+.profile-form-header {
+  padding: 28px 34px;
+  background: linear-gradient(135deg, #073f52, #0b8fa3);
+  color: #ffffff;
+}
+
+.profile-form-header h5 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.5px;
+}
+
+.profile-form-header p {
+  margin: 6px 0 0 !important;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.profile-form-section {
+  padding: 26px 34px;
+  border-bottom: 1px solid #e6f0f0;
+}
+
+.profile-form-section:last-of-type {
+  border-bottom: none;
+}
+
+.profile-form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 4px;
+  color: #073f52;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.profile-form-section-title::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  border-radius: 4px;
+  background: #0b8fa3;
+}
+
+.profile-form-section-sub {
+  margin: 0 0 18px;
+  color: #607982;
+  font-size: 13px;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 16px;
+}
+
+.profile-form-grid .MuiTextField-root {
+  margin-top: 0 !important;
+}
+
+.create-profile-page .MuiOutlinedInput-root {
+  min-height: 50px;
+  border-radius: 12px;
+  background: #fbfefe;
+  font-size: 15px;
+}
+
+.create-profile-page .MuiOutlinedInput-root:hover {
+  background: #ffffff;
+}
+
+.create-profile-page .MuiOutlinedInput-root fieldset {
+  border-color: #cfe2e5;
+  border-width: 1.5px;
+}
+
+.create-profile-page .MuiOutlinedInput-root:hover fieldset {
+  border-color: #0b8fa3;
+}
+
+.create-profile-page .MuiOutlinedInput-root.Mui-focused {
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(11, 143, 163, 0.12);
+}
+
+.create-profile-page .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #0b8fa3;
+  border-width: 2px;
+}
+
+.create-profile-page .MuiInputLabel-root {
+  color: #607982;
+  font-size: 14px;
+}
+
+.create-profile-page .MuiInputLabel-root.Mui-focused {
+  color: #0b8fa3;
+  font-weight: 600;
+}
+
+.create-profile-page .MuiInputLabel-root.MuiInputLabel-shrink {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 0 6px;
+}
+
+.qualification-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 110px 44px;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.add-row-button {
+  margin-top: 4px !important;
+  color: #0b8fa3 !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+}
+
+.profile-form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px 34px 30px;
+  background: #f9fcfc;
+  border-top: 1px solid #e6f0f0;
+}
+
+.profile-form-footer .MuiButton-root {
+  min-height: 48px;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+}
+
+.detect-location-btn {
+  flex: 1 1 240px;
+  border: 1.5px solid #0b8fa3 !important;
+  color: #0b8fa3 !important;
+  background: #ffffff !important;
+}
+
+.detect-location-btn:hover {
+  background: rgba(11, 143, 163, 0.07) !important;
+}
+
+.detect-location-btn.done {
+  border-color: #1c8a5a !important;
+  color: #1c8a5a !important;
+  background: rgba(28, 138, 90, 0.06) !important;
+}
+
+.save-profile-btn {
+  flex: 1 1 240px;
+  background: #073f52 !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(7, 63, 82, 0.18) !important;
+}
+
+.save-profile-btn:hover {
+  background: #063744 !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .create-profile-page {
+    padding: 30px 14px 50px;
+  }
+
+  .create-profile-card {
+    border-radius: 18px !important;
+  }
+
+  .profile-form-header {
+    padding: 22px 20px;
+  }
+
+  .profile-form-header h5 {
+    font-size: 22px !important;
+  }
+
+  .profile-form-section {
+    padding: 20px;
+  }
+
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .qualification-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .qualification-row .MuiIconButton-root {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+
+  .profile-form-footer {
+    padding: 18px 20px 22px;
+    flex-direction: column;
+  }
+
+  .detect-location-btn,
+  .save-profile-btn {
+    flex: 1 1 100%;
+  }
+}

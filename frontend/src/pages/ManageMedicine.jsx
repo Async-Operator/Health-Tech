@@ -3,6 +3,7 @@ import { getProfile, updateProfile } from "../api/profileApi";
 import { Container, Paper, Typography, TextField, Button, Box, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import "./ManageMedicine.css";
 
 function ManageMedicine() {
   const [data, setData] = useState(null);

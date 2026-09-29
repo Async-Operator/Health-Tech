@@ -5,7 +5,7 @@ import {
   Grid,
   Link as MuiLink,
 } from "@mui/material";
-
+import "./Footer.css"
 function Footer() {
   return (
     <footer className="site-footer">

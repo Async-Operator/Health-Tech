@@ -1,0 +1,274 @@
+/* =========================================================
+   LOGIN — appearance only. Use MUI TextField/Button as-is.
+   No !important. No layout overrides.
+========================================================= */
+
+.login-page.MuiContainer-root {
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  margin-top: -70px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(22, 166, 182, 0.2), transparent 34%),
+    radial-gradient(circle at 88% 84%, rgba(7, 63, 82, 0.14), transparent 36%),
+    linear-gradient(135deg, #f3fbfb 0%, #e6f6f5 55%, #dcf1f1 100%);
+}
+
+.login-page::before,
+.login-page::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.login-page::before {
+  width: 360px;
+  height: 360px;
+  top: -160px;
+  right: -120px;
+  background: radial-gradient(circle at 30% 30%, rgba(22, 166, 182, 0.3), transparent);
+  animation: loginFloat 12s ease-in-out infinite;
+}
+
+.login-page::after {
+  width: 320px;
+  height: 320px;
+  bottom: -150px;
+  left: -120px;
+  background: radial-gradient(circle at 70% 70%, rgba(7, 63, 82, 0.22), transparent);
+  animation: loginFloat 14s ease-in-out infinite reverse;
+}
+
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 430px;
+  padding: 40px 38px 34px;
+  border-radius: 26px;
+  border: 1px solid rgba(207, 226, 229, 0.9);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 28px 70px rgba(7, 63, 82, 0.14),
+    0 6px 20px rgba(7, 63, 82, 0.06);
+  animation: loginCardIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 36px;
+  right: 36px;
+  height: 3px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(90deg, #073f52, #0b8fa3, #16a6b6);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.login-header::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 18px;
+  border-radius: 18px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+      center / 28px 28px no-repeat,
+    linear-gradient(135deg, #073f52 0%, #0b8fa3 55%, #16a6b6 100%);
+  box-shadow: 0 12px 26px rgba(11, 143, 163, 0.3);
+}
+
+.login-header h5 {
+  margin: 0 0 8px;
+  color: #073f52;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.login-header p {
+  margin: 0;
+  color: #6b8189;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* MUI TextField — only color / radius / focus ring */
+.login-page .MuiTextField-root {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.login-page .MuiInputLabel-root {
+  color: #6b8189;
+  font-size: 14px;
+}
+
+.login-page .MuiInputLabel-root.Mui-focused {
+  color: #0b8fa3;
+  font-weight: 700;
+}
+
+.login-page .MuiInputLabel-root.MuiInputLabel-shrink {
+  background: #ffffff;
+  padding: 0 6px;
+  border-radius: 6px;
+}
+
+.login-page .MuiOutlinedInput-root {
+  min-height: 54px;
+  border-radius: 14px;
+  background: #fbfefe;
+  font-size: 15px;
+}
+
+.login-page .MuiOutlinedInput-root fieldset {
+  border-color: #cfe2e5;
+  border-width: 1.5px;
+}
+
+.login-page .MuiOutlinedInput-root:hover fieldset {
+  border-color: #8fc9d1;
+}
+
+.login-page .MuiOutlinedInput-root.Mui-focused {
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(11, 143, 163, 0.12);
+}
+
+.login-page .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #0b8fa3;
+  border-width: 2px;
+}
+
+.login-page .MuiOutlinedInput-input {
+  color: #073f52;
+}
+
+/* Action block */
+.auth-action-section {
+  margin-top: 22px;
+  padding: 22px 20px 18px;
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 143, 163, 0.05) 0%,
+    rgba(11, 143, 163, 0.02) 100%
+  );
+  border: 1px dashed rgba(11, 143, 163, 0.22);
+}
+
+.login-button,
+.auth-primary-btn {
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #073f52 0%, #0b8fa3 55%, #16a6b6 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 750;
+  text-transform: none;
+  box-shadow: 0 14px 28px rgba(7, 63, 82, 0.24);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+}
+
+.login-button:hover,
+.auth-primary-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 20px 38px rgba(7, 63, 82, 0.3);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 14px;
+  color: #8aa2a9;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(11, 143, 163, 0.28), transparent);
+}
+
+.signup-link-button,
+.auth-secondary-btn {
+  min-height: 50px;
+  border-radius: 12px;
+  color: #073f52;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: none;
+  background: #ffffff;
+  border: 1.5px solid rgba(11, 143, 163, 0.35);
+  transition: background 0.26s ease, border-color 0.26s ease, color 0.26s ease, transform 0.26s ease;
+}
+
+.signup-link-button:hover,
+.auth-secondary-btn:hover {
+  background: rgba(11, 143, 163, 0.06);
+  border-color: #0b8fa3;
+  color: #0b8fa3;
+  transform: translateY(-1px);
+}
+
+@keyframes loginCardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes loginFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(18px, -16px, 0) scale(1.06); }
+}
+
+@media (max-width: 550px) {
+  .login-page.MuiContainer-root {
+    padding: 20px 14px;
+    margin-top: -64px;
+  }
+
+  .login-card {
+    padding: 30px 22px 26px;
+    border-radius: 22px;
+  }
+
+  .login-header h5 {
+    font-size: 24px;
+  }
+
+  .login-button,
+  .auth-primary-btn {
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page::before,
+  .login-page::after,
+  .login-card {
+    animation: none;
+  }
+}

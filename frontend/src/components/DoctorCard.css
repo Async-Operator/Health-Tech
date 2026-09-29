@@ -1,0 +1,90 @@
+/* =========================================================
+   DOCTOR CARD — responsive card component
+========================================================= */
+
+.doctor-card {
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff !important;
+  border: 1px solid #dceced;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 25px rgba(7, 63, 82, 0.06) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 35px rgba(7, 63, 82, 0.12) !important;
+}
+
+.doctor-card-image {
+  width: 100% !important;
+  height: 230px !important;
+  object-fit: cover !important;
+  object-position: top !important;
+  display: block;
+}
+
+.doctor-card-content {
+  padding: 22px !important;
+}
+
+.doctor-card-name {
+  margin: 0 !important;
+  color: #073f52 !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+
+.doctor-card-specialty {
+  margin: 6px 0 12px !important;
+  color: #0b8fa3 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.doctor-card-description {
+  margin: 0 !important;
+  color: #607982 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.doctor-card-actions {
+  padding: 0 22px 22px !important;
+}
+
+.doctor-card-button {
+  width: 100% !important;
+  min-height: 43px !important;
+  margin-top: 0 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  background: #073f52 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  text-transform: none !important;
+}
+
+.doctor-card-button:hover {
+  background: #063744 !important;
+}
+
+@media (max-width: 600px) {
+  .doctor-card-image {
+    height: 200px !important;
+  }
+
+  .doctor-card-content {
+    padding: 16px !important;
+  }
+
+  .doctor-card-name {
+    font-size: 18px !important;
+  }
+
+  .doctor-card-actions {
+    padding: 0 16px 16px !important;
+  }
+}

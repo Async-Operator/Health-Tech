@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axiosClient from "../api/axiosClient";
 import { toast } from "react-toastify";
+import "./Login.css";
 
 function Login() {
   const { setUser } = useAuth();
@@ -14,7 +15,12 @@ function Login() {
   const handleLogin = async () => {
     try {
       const res = await axiosClient.post("/login", { email, password });
-      setUser({ role: res.data.role, userId: res.data.userId });
+
+      setUser({
+        role: res.data.role,
+        userId: res.data.userId
+      });
+
       toast.success("Login successful!");
       navigate(res.data.profileExists ? "/" : "/create-profile");
     } catch (err) {
@@ -23,19 +29,62 @@ function Login() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ marginTop: 8 }}>
-      <Paper sx={{ padding: 4 }}>
-        <Typography variant="h5" gutterBottom>Login</Typography>
-        <TextField fullWidth label="Email" margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <TextField fullWidth label="Password" type="password" margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <Button fullWidth variant="contained" sx={{ marginTop: 2 }} onClick={handleLogin}>
+    <Container maxWidth="xs" className="login-page">
+      <Paper className="login-card">
+
+        <div className="login-header">
+          <Typography variant="h5">
+            Welcome Back
+          </Typography>
+
+          <p>
+            Sign in to continue to your healthcare account.
+          </p>
+        </div>
+
+        <TextField
+          fullWidth
+          label="Email"
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <TextField
+          fullWidth
+          label="Password"
+          type="password"
+          margin="normal"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <div className="auth-action-section">
+
+        <Button
+          fullWidth
+          variant="contained"
+          className="login-button auth-primary-btn"
+          onClick={handleLogin}
+        >
           Login
         </Button>
-        <Button fullWidth sx={{ marginTop: 1 }} onClick={() => navigate("/signup")}>
+
+        <div className="auth-divider">NEW HERE?</div>
+
+        <Button
+          fullWidth
+          className="signup-link-button auth-secondary-btn"
+          onClick={() => navigate("/signup")}
+        >
           New user? Signup
         </Button>
+
+      </div>
+
       </Paper>
     </Container>
   );
 }
+
 export default Login;

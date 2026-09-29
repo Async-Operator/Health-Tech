@@ -1,0 +1,147 @@
+.manage-medicine-page {
+  min-height: calc(100vh - 72px);
+  padding: 55px 20px 80px;
+  background: #f7fbfb;
+}
+
+.manage-medicine-container {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.manage-medicine-card {
+  padding: 38px;
+  background: #ffffff;
+  border: 1px solid #dceced;
+  border-radius: 24px;
+  box-shadow: 0 15px 45px rgba(7, 63, 82, 0.08);
+}
+
+.manage-medicine-title {
+  margin: 0;
+  color: #073f52;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.manage-medicine-subtitle {
+  margin: 8px 0 28px;
+  color: #607982;
+}
+
+.medicine-row {
+  display: grid;
+  grid-template-columns: 1fr 150px 48px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #e0eeee;
+  border-radius: 14px;
+  background: #fbfefe;
+  transition: 0.2s ease;
+}
+
+.medicine-row:hover {
+  border-color: #bcdde1;
+  box-shadow: 0 5px 16px rgba(7, 63, 82, 0.05);
+}
+
+.medicine-row input {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cfe2e5;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #073f52;
+  font: inherit;
+}
+
+.medicine-row input:focus {
+  border-color: #0b8fa3;
+  box-shadow: 0 0 0 3px rgba(11, 143, 163, 0.1);
+}
+
+.medicine-delete {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 9px;
+  background: #fff2f2;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s ease;
+}
+
+.medicine-delete:hover {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+.medicine-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.medicine-add-button,
+.medicine-save-button {
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.medicine-add-button {
+  border: 1px solid #0b8fa3;
+  background: #ffffff;
+  color: #0b8fa3;
+}
+
+.medicine-add-button:hover {
+  background: rgba(11, 143, 163, 0.07);
+}
+
+.medicine-save-button {
+  border: none;
+  background: #073f52;
+  color: #ffffff;
+}
+
+.medicine-save-button:hover {
+  background: #063744;
+}
+
+@media (max-width: 600px) {
+  .manage-medicine-page {
+    padding: 30px 14px 50px;
+  }
+
+  .manage-medicine-card {
+    padding: 24px;
+  }
+
+  .manage-medicine-title {
+    font-size: 24px;
+  }
+
+  .medicine-row {
+    grid-template-columns: 1fr 90px 42px;
+    padding: 10px;
+  }
+
+  .medicine-actions {
+    flex-direction: column;
+  }
+
+  .medicine-add-button,
+  .medicine-save-button {
+    width: 100%;
+  }
+}
