@@ -34,7 +34,9 @@ function Navbar() {
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Doctors", path: "/doctors" },
+    { label: "Pharmacies", path: "/pharmacies" },
   ];
+  
   if (user?.role === "pharmacy") {
     menuItems.push({ label: "Manage Medicine", path: "/pharmacy/medicine" });
   }

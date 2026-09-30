@@ -11,6 +11,8 @@ import CreateProfile from "./pages/CreateProfile";
 import ProfileView from "./pages/ProfileView";
 import ProfileEdit from "./pages/ProfileEdit";
 import ManageMedicine from "./pages/ManageMedicine";
+import PharmacyListing from "./pages/PharmacyListing";
+import PharmacyDetail from "./pages/PharmacyDetail";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -29,6 +31,8 @@ function App() {
           <Route path="/doctors/:id" element={<DoctorDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/pharmacies" element={<PharmacyListing />} />
+          <Route path="/pharmacies/:id" element={<PharmacyDetail />} />
 
           <Route path="/create-profile" element={
             <ProtectedRoute><CreateProfile /></ProtectedRoute>

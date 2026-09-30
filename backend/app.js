@@ -15,6 +15,7 @@ const MongoStore = require('connect-mongo').default;;
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const { isLoggedIn } = require("./middleware.js");
+const Fuse = require("fuse.js");
 
 
 const port = 5000;
@@ -157,6 +158,129 @@ app.get("/doctors/:id",async(req,res)=>{
     res.status(200).json(doctor);
   }catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+// stops special characters in user input from breaking the regex
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const getTerms = (search) => search.trim().split(/\s+/).filter(Boolean);
+// every word must match at least one field
+function buildSearchFilter(terms) {
+  if (terms.length === 0) return {};
+  return {
+    $and: terms.map((t) => {
+      const rx = { $regex: escapeRegex(t), $options: "i" };
+      return {
+        $or: [
+          { name: rx },
+          { "location.village": rx },
+          { "location.city": rx },
+          { "location.district": rx },
+          { "location.state": rx },
+          { "medicineStock.medicineName": rx },
+        ],
+      };
+    }),
+  };
+}
+
+// which searched medicines this pharmacy has (for the green/red chips)
+function addMatchedMedicines(list, terms) {
+  if (terms.length === 0) return list;
+  return list.map((p) => ({
+    ...p,
+    matchedMedicines: (p.medicineStock || []).filter((m) =>
+      terms.some((t) => m.medicineName?.toLowerCase().includes(t.toLowerCase()))
+    ),
+  }));
+}
+
+// spelling-mistake fallback
+function fuzzySearch(list, search) {
+  const fuse = new Fuse(list, {
+    keys: [
+      "name",
+      "location.village",
+      "location.city",
+      "location.district",
+      "location.state",
+      "medicineStock.medicineName",
+    ],
+    threshold: 0.3,
+  });
+  return fuse.search(search).map((r) => r.item);
+}
+
+
+//all pharmacies (+ search):
+app.get("/pharmacies", async (req, res) => {
+  try {
+    const search = (req.query.search || "").trim();
+    const terms = getTerms(search);
+
+    // Step 1: search inside MongoDB
+    let results = await Pharmacy.find(buildSearchFilter(terms)).lean();
+
+    // Step 2: nothing found -> fuzzy fallback
+    if (terms.length > 0 && results.length === 0) {
+      const all = await Pharmacy.find({}).lean();
+      results = fuzzySearch(all, search);
+    }
+
+    res.status(200).json(addMatchedMedicines(results, terms));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+//nearby pharmacies (+ search):
+app.get("/pharmacies/nearby", async (req, res) => {
+  try {
+    const lng = parseFloat(req.query.lng);
+    const lat = parseFloat(req.query.lat);
+    const maxDistance = parseInt(req.query.maxDistance) || 20000;
+    const search = (req.query.search || "").trim();
+    const terms = getTerms(search);
+
+    if (isNaN(lng) || isNaN(lat)) {
+      return res.status(400).json({ error: "lng and lat are required" });
+    }
+
+    const geoStage = (query) => ({
+      $geoNear: {
+        near: { type: "Point", coordinates: [lng, lat] },
+        distanceField: "distance",
+        maxDistance,
+        spherical: true,
+        query,
+      },
+    });
+
+    // Step 1: distance + search together, inside MongoDB
+    let results = await Pharmacy.aggregate([geoStage(buildSearchFilter(terms))]);
+
+    // Step 2: nothing found -> fuzzy fallback inside the same distance
+    if (terms.length > 0 && results.length === 0) {
+      const all = await Pharmacy.aggregate([geoStage({})]);
+      results = fuzzySearch(all, search);
+    }
+
+    res.status(200).json(addMatchedMedicines(results, terms));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+//show pharmacies:
+app.get("/pharmacies/:id", async (req, res) => {
+  try {
+    const pharmacy = await Pharmacy.findById(req.params.id);
+    if (!pharmacy) return res.status(404).json({ error: "Pharmacy not found" });
+    res.status(200).json(pharmacy);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
