@@ -4,10 +4,14 @@ import axiosClient from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { Chip } from "@mui/material";
 import "./DoctorDetail.css";
+import BookingModal from "../components/BookingModal";
+import { toast } from "react-toastify";
+import { Box, Container, Typography, Grid, Chip, Paper, Divider, Button, Table, TableBody, TableRow, TableCell } from "@mui/material";
 
 function DoctorDetail() {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -20,8 +24,11 @@ function DoctorDetail() {
   const handleBookClick = () => {
     if (!user) {
       navigate("/login");
+    } else if (user.role !== "patient") {
+      toast.error("Only patients can book consultations");
     } else {
       alert("Booking flow coming next");
+      setOpenModal(true);
     }
   };
 
@@ -106,6 +113,29 @@ function DoctorDetail() {
             {doctor.description || "No description added yet."}
           </p>
         </section>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 7 }}>
+            <Typography variant="h4">{doctor.name}</Typography>
+            <Typography variant="h6" color="text.secondary">{doctor.specialty}</Typography>
+            <Typography sx={{ marginTop: 1 }}>{doctor.hospital}</Typography>
+            <Typography sx={{ marginTop: 1 }}>Experience: {doctor.experience} years</Typography>
+            <Typography sx={{ marginTop: 1 }}>{loc.city}, {loc.district}, {loc.state}</Typography>
+            <Box sx={{ marginTop: 2 }}>
+              {doctor.languages?.map((lang) => (
+                <Chip key={lang} label={lang} sx={{ marginRight: 1 }} />
+              ))}
+            </Box>
+            <Button variant="contained" fullWidth sx={{ marginTop: 3 }} onClick={handleBookClick}>
+              Book Consultation
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ marginY: 3 }} />
+        <Typography variant="h6">About</Typography>
+        <Typography sx={{ marginTop: 1, color: "text.secondary" }}>
+          {doctor.description || "No description added yet."}
+        </Typography>
 
         {doctor.qualifications?.length > 0 && (
           <section className="doctor-detail-section">
@@ -131,6 +161,10 @@ function DoctorDetail() {
           <h3>Availability</h3>
 
           <div className="doctor-availability">
+        <Divider sx={{ marginY: 3 }} />
+        <Typography variant="h6">Availability</Typography>
+        <Table sx={{ marginTop: 1 }}>
+          <TableBody>
             {doctor.availability?.map((a) => (
               <div className="availability-row" key={a.day}>
                 <strong>{a.day}</strong>
@@ -149,6 +183,14 @@ function DoctorDetail() {
 
       </div>
     </main>
+          </TableBody>
+        </Table>
+      </Paper>
+
+      {doctor && (
+        <BookingModal open={openModal} onClose={() => setOpenModal(false)} doctor={doctor} />
+      )}
+    </Container>
   );
 }
 export default DoctorDetail;

@@ -18,9 +18,10 @@ const consultationSchema = new Schema({
 
   status: {
     type: String,
-    enum: ["pending", "confirmed", "completed", "cancelled"],
+    enum: ["pending", "confirmed", "ongoing", "completed", "cancelled"],
     default: "pending"
   },
+  roomId: { type: String },
 
   symptoms: { type: String, trim: true },
 

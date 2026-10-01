@@ -2,59 +2,34 @@ import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import { getProfile } from "../api/profileApi";
 import { useAuth } from "../context/AuthContext";
-import DoctorCard from "../components/DoctorCard";
-import { Grid } from "@mui/material";
-import "./DoctorListing.css";
+import PharmacyCard from "../components/PharmacyCard";
 import { Grid, Box, Button, TextField, MenuItem, Typography, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { toast } from "react-toastify";
 
-function DoctorListing() {
+function PharmacyListing() {
   const { user } = useAuth();
-  const [doctors, setDoctors] = useState([]);
+  const [pharmacies, setPharmacies] = useState([]);
   const [origin, setOrigin] = useState(null);
   const [radius, setRadius] = useState(20);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    // wait 400ms after typing stops, then call backend
     const timer = setTimeout(() => {
       const searchParam = search.trim() || undefined;
 
-  return (
-    <div className="doctor-listing-page">
-      <div className="doctor-listing-container">
-
-        <div className="doctor-listing-header">
-          <h1>Find a Doctor</h1>
-          <p>
-            Connect with qualified doctors and book a consultation.
-          </p>
-        </div>
-
-        <Grid container spacing={3} className="doctor-grid">
-          {doctors.map((doc) => (
-            <Grid
-              size={{ xs: 12, sm: 6, md: 4 }}
-              key={doc._id}
-            >
-              <DoctorCard doctor={doc} />
-            </Grid>
-          ))}
-        </Grid>
-
-      </div>
-    </div>
       if (origin) {
         axiosClient
-          .get("/doctors/nearby", {
+          .get("/pharmacies/nearby", {
             params: { lng: origin[0], lat: origin[1], maxDistance: radius * 1000, search: searchParam },
           })
-          .then((res) => setDoctors(res.data))
-          .catch(() => toast.error("Could not load nearby doctors"));
+          .then((res) => setPharmacies(res.data))
+          .catch(() => toast.error("Could not load nearby pharmacies"));
       } else {
         axiosClient
-          .get("/doctors", { params: { search: searchParam } })
-          .then((res) => setDoctors(res.data))
+          .get("/pharmacies", { params: { search: searchParam } })
+          .then((res) => setPharmacies(res.data))
           .catch((err) => console.log(err));
       }
     }, 400);
@@ -91,7 +66,7 @@ function DoctorListing() {
     <Box sx={{ padding: 2 }}>
       <TextField
         fullWidth
-        placeholder="Search by doctor name, specialty, hospital, or area"
+        placeholder="Search by pharmacy name, area, or medicine (e.g. Paracetamol)"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         sx={{ marginBottom: 2 }}
@@ -106,7 +81,7 @@ function DoctorListing() {
 
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, alignItems: "center", marginBottom: 2 }}>
         <Button variant={origin ? "outlined" : "contained"} onClick={() => setOrigin(null)}>
-          All Doctors
+          All Pharmacies
         </Button>
         <Button variant="outlined" onClick={useGps}>Near Me (GPS)</Button>
         {user?.role === "patient" && (
@@ -122,21 +97,20 @@ function DoctorListing() {
         )}
       </Box>
 
-      {doctors.length === 0 && (
+      {pharmacies.length === 0 && (
         <Typography color="text.secondary">
-          No doctor found. Try a different word{origin ? " or a bigger distance" : ""}.
+          No pharmacy found. Try a different word{origin ? " or a bigger distance" : ""}.
         </Typography>
       )}
 
       <Grid container spacing={3}>
-        {doctors.map((doc) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={doc._id}>
-            <DoctorCard doctor={doc} />
+        {pharmacies.map((p) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={p._id}>
+            <PharmacyCard pharmacy={p} />
           </Grid>
         ))}
       </Grid>
     </Box>
   );
 }
-
-export default DoctorListing;
+export default PharmacyListing;
