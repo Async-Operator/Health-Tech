@@ -13,6 +13,8 @@ import ProfileEdit from "./pages/ProfileEdit";
 import ManageMedicine from "./pages/ManageMedicine";
 import PharmacyListing from "./pages/PharmacyListing";
 import PharmacyDetail from "./pages/PharmacyDetail";
+import MyAppointments from "./pages/MyAppointments";
+import MyConsultations from "./pages/MyConsultations";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -33,6 +35,12 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/pharmacies" element={<PharmacyListing />} />
           <Route path="/pharmacies/:id" element={<PharmacyDetail />} />
+          <Route path="/doctor/appointments" element={
+            <ProtectedRoute allowedRoles={["doctor"]}><MyAppointments /></ProtectedRoute>
+          } />
+          <Route path="/my-consultations" element={
+            <ProtectedRoute allowedRoles={["patient"]}><MyConsultations /></ProtectedRoute>
+          } />
 
           <Route path="/create-profile" element={
             <ProtectedRoute><CreateProfile /></ProtectedRoute>

@@ -62,7 +62,7 @@ const sessionOptions  = {
 }
 
 app.use(cors({ 
-  origin: "http://localhost:5173",   // ✅ no trailing slash
+  origin: "http://localhost:5173",   // no trailing slash
   credentials: true 
 }));
 app.use(session(sessionOptions));
@@ -72,6 +72,49 @@ app.use(passport.session());
 passport.use(new LocalStrategy({ usernameField: "email" }, User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+//====================================================
+// SEARCH HELPERS (used by both doctors and pharmacies)
+//====================================================
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const getTerms = (search) => search.trim().split(/\s+/).filter(Boolean);
+
+const PHARMACY_FIELDS = [
+  "name", "location.village", "location.city", "location.district",
+  "location.state", "medicineStock.medicineName",
+];
+const DOCTOR_FIELDS = [
+  "name", "specialty", "hospital", "location.city",
+  "location.district", "location.state", "languages",
+];
+
+// every word must match at least one field
+function buildSearchFilter(terms, fields) {
+  if (terms.length === 0) return {};
+  return {
+    $and: terms.map((t) => {
+      const rx = { $regex: escapeRegex(t), $options: "i" };
+      return { $or: fields.map((f) => ({ [f]: rx })) };
+    }),
+  };
+}
+
+// spelling-mistake fallback
+function fuzzySearch(list, search, fields) {
+  const fuse = new Fuse(list, { keys: fields, threshold: 0.3 });
+  return fuse.search(search).map((r) => r.item);
+}
+
+// which searched medicines this pharmacy has (for the green/red chips)
+function addMatchedMedicines(list, terms) {
+  if (terms.length === 0) return list;
+  return list.map((p) => ({
+    ...p,
+    matchedMedicines: (p.medicineStock || []).filter((m) =>
+      terms.some((t) => m.medicineName?.toLowerCase().includes(t.toLowerCase()))
+    ),
+  }));
+}
 
 //signup:
 app.post("/signup", async (req, res, next) => {
@@ -137,19 +180,66 @@ app.get("/current-user", (req, res) => {
   }
 });
 
+//====================================================
+// DOCTORS
+//====================================================
 
+//all doctors (+ search):
+app.get("/doctors", async (req, res) => {
+  try {
+    const search = (req.query.search || "").trim();
+    const terms = getTerms(search);
 
-//all doctors:
-app.get("/doctors",async(req,res)=>{
-    try {
-    const allDoctors = await Doctor.find({});
-    res.status(200).json(allDoctors);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    let results = await Doctor.find(buildSearchFilter(terms, DOCTOR_FIELDS)).lean();
+
+    if (terms.length > 0 && results.length === 0) {
+      const all = await Doctor.find({}).lean();
+      results = fuzzySearch(all, search, DOCTOR_FIELDS);
+    }
+
+    res.status(200).json(results);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
-//show doctors:
+//nearby doctors (+ search) -- MUST stay above /doctors/:id
+app.get("/doctors/nearby", async (req, res) => {
+  try {
+    const lng = parseFloat(req.query.lng);
+    const lat = parseFloat(req.query.lat);
+    const maxDistance = parseInt(req.query.maxDistance) || 20000;
+    const search = (req.query.search || "").trim();
+    const terms = getTerms(search);
+
+    if (isNaN(lng) || isNaN(lat)) {
+      return res.status(400).json({ error: "lng and lat are required" });
+    }
+
+    const geoStage = (query) => ({
+      $geoNear: {
+        near: { type: "Point", coordinates: [lng, lat] },
+        distanceField: "distance",
+        maxDistance,
+        spherical: true,
+        query,
+      },
+    });
+
+    let results = await Doctor.aggregate([geoStage(buildSearchFilter(terms, DOCTOR_FIELDS))]);
+
+    if (terms.length > 0 && results.length === 0) {
+      const all = await Doctor.aggregate([geoStage({})]);
+      results = fuzzySearch(all, search, DOCTOR_FIELDS);
+    }
+
+    res.status(200).json(results);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+//show doctor:
 app.get("/doctors/:id",async(req,res)=>{
   try{
     let {id} = req.params;
@@ -161,58 +251,9 @@ app.get("/doctors/:id",async(req,res)=>{
   }
 });
 
-
-
-// stops special characters in user input from breaking the regex
-const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const getTerms = (search) => search.trim().split(/\s+/).filter(Boolean);
-// every word must match at least one field
-function buildSearchFilter(terms) {
-  if (terms.length === 0) return {};
-  return {
-    $and: terms.map((t) => {
-      const rx = { $regex: escapeRegex(t), $options: "i" };
-      return {
-        $or: [
-          { name: rx },
-          { "location.village": rx },
-          { "location.city": rx },
-          { "location.district": rx },
-          { "location.state": rx },
-          { "medicineStock.medicineName": rx },
-        ],
-      };
-    }),
-  };
-}
-
-// which searched medicines this pharmacy has (for the green/red chips)
-function addMatchedMedicines(list, terms) {
-  if (terms.length === 0) return list;
-  return list.map((p) => ({
-    ...p,
-    matchedMedicines: (p.medicineStock || []).filter((m) =>
-      terms.some((t) => m.medicineName?.toLowerCase().includes(t.toLowerCase()))
-    ),
-  }));
-}
-
-// spelling-mistake fallback
-function fuzzySearch(list, search) {
-  const fuse = new Fuse(list, {
-    keys: [
-      "name",
-      "location.village",
-      "location.city",
-      "location.district",
-      "location.state",
-      "medicineStock.medicineName",
-    ],
-    threshold: 0.3,
-  });
-  return fuse.search(search).map((r) => r.item);
-}
-
+//====================================================
+// PHARMACIES
+//====================================================
 
 //all pharmacies (+ search):
 app.get("/pharmacies", async (req, res) => {
@@ -220,13 +261,11 @@ app.get("/pharmacies", async (req, res) => {
     const search = (req.query.search || "").trim();
     const terms = getTerms(search);
 
-    // Step 1: search inside MongoDB
-    let results = await Pharmacy.find(buildSearchFilter(terms)).lean();
+    let results = await Pharmacy.find(buildSearchFilter(terms, PHARMACY_FIELDS)).lean();
 
-    // Step 2: nothing found -> fuzzy fallback
     if (terms.length > 0 && results.length === 0) {
       const all = await Pharmacy.find({}).lean();
-      results = fuzzySearch(all, search);
+      results = fuzzySearch(all, search, PHARMACY_FIELDS);
     }
 
     res.status(200).json(addMatchedMedicines(results, terms));
@@ -235,7 +274,7 @@ app.get("/pharmacies", async (req, res) => {
   }
 });
 
-//nearby pharmacies (+ search):
+//nearby pharmacies (+ search) -- MUST stay above /pharmacies/:id
 app.get("/pharmacies/nearby", async (req, res) => {
   try {
     const lng = parseFloat(req.query.lng);
@@ -258,13 +297,11 @@ app.get("/pharmacies/nearby", async (req, res) => {
       },
     });
 
-    // Step 1: distance + search together, inside MongoDB
-    let results = await Pharmacy.aggregate([geoStage(buildSearchFilter(terms))]);
+    let results = await Pharmacy.aggregate([geoStage(buildSearchFilter(terms, PHARMACY_FIELDS))]);
 
-    // Step 2: nothing found -> fuzzy fallback inside the same distance
     if (terms.length > 0 && results.length === 0) {
       const all = await Pharmacy.aggregate([geoStage({})]);
-      results = fuzzySearch(all, search);
+      results = fuzzySearch(all, search, PHARMACY_FIELDS);
     }
 
     res.status(200).json(addMatchedMedicines(results, terms));
@@ -273,7 +310,7 @@ app.get("/pharmacies/nearby", async (req, res) => {
   }
 });
 
-//show pharmacies:
+//show pharmacy:
 app.get("/pharmacies/:id", async (req, res) => {
   try {
     const pharmacy = await Pharmacy.findById(req.params.id);
@@ -284,11 +321,10 @@ app.get("/pharmacies/:id", async (req, res) => {
   }
 });
 
-
-//crud for doctor:
-// GET own profile
+//====================================================
+// DOCTOR PROFILE CRUD
+//====================================================
 app.get("/doctor/profile", isLoggedIn, async (req, res) => {
-  console.log("DEBUG - logged in user:", req.user);  // ADD THIS LINE
   try {
     if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
     const profile = await Doctor.findOne({ user: req.user._id });
@@ -298,7 +334,6 @@ app.get("/doctor/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-// CREATE profile
 app.post("/doctor/profile", isLoggedIn, async (req, res) => {
   try {
     if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
@@ -309,7 +344,6 @@ app.post("/doctor/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-// UPDATE profile
 app.put("/doctor/profile", isLoggedIn, async (req, res) => {
   try {
     if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
@@ -320,7 +354,6 @@ app.put("/doctor/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-// DELETE profile + user account
 app.delete("/doctor/profile", isLoggedIn, async (req, res) => {
   try {
     if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
@@ -335,7 +368,9 @@ app.delete("/doctor/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-//patient crud operation:
+//====================================================
+// PATIENT PROFILE CRUD
+//====================================================
 app.get("/patient/profile", isLoggedIn, async (req, res) => {
   try {
     if (req.user.role !== "patient") return res.status(403).json({ error: "Not authorized" });
@@ -380,7 +415,9 @@ app.delete("/patient/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-//pharmacy crud operation:
+//====================================================
+// PHARMACY PROFILE CRUD
+//====================================================
 app.get("/pharmacy/profile", isLoggedIn, async (req, res) => {
   try {
     if (req.user.role !== "pharmacy") return res.status(403).json({ error: "Not authorized" });
@@ -420,6 +457,134 @@ app.delete("/pharmacy/profile", isLoggedIn, async (req, res) => {
       if (err) return res.status(500).json({ error: "Logout failed" });
       res.status(200).json({ message: "Account deleted" });
     });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+//====================================================
+// CONSULTATIONS
+//====================================================
+
+// PATIENT books a consultation
+app.post("/consultations", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "patient") return res.status(403).json({ error: "Only patients can book" });
+    const { doctorId, date, slot, symptoms } = req.body;
+    const consultation = await Consultation.create({
+      patient: req.user._id,
+      doctor: doctorId,
+      date,
+      slot,
+      symptoms
+    });
+    res.status(201).json(consultation);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// PATIENT - my bookings
+app.get("/patient/consultations", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "patient") return res.status(403).json({ error: "Not authorized" });
+    const list = await Consultation.find({ patient: req.user._id })
+      .populate("doctor", "name specialty image")
+      .sort({ createdAt: -1 });
+    res.status(200).json(list);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DOCTOR - my appointments
+app.get("/doctor/consultations", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
+    const doctorProfile = await Doctor.findOne({ user: req.user._id });
+    const list = await Consultation.find({ doctor: doctorProfile._id })
+      .populate("patient", "email")
+      .sort({ createdAt: -1 });
+    res.status(200).json(list);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DOCTOR - confirm / cancel / complete
+app.put("/consultations/:id/status", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
+    const { status } = req.body; // "confirmed" | "cancelled" | "completed"
+    const consultation = await Consultation.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    // if call finished/cancelled, doctor becomes available again
+    if (status === "completed" || status === "cancelled") {
+      const doctorProfile = await Doctor.findOne({ user: req.user._id });
+      await Doctor.findByIdAndUpdate(doctorProfile._id, { isAvailableNow: true });
+    }
+
+    res.status(200).json(consultation);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DOCTOR - start video call
+app.post("/consultations/:id/start-call", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
+    const roomId = `room-${req.params.id}-${Date.now()}`;
+
+    const consultation = await Consultation.findByIdAndUpdate(
+      req.params.id,
+      { status: "ongoing", roomId },
+      { new: true }
+    );
+
+    const doctorProfile = await Doctor.findOne({ user: req.user._id });
+    await Doctor.findByIdAndUpdate(doctorProfile._id, { isAvailableNow: false });
+
+    res.status(200).json(consultation);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DOCTOR - end video call
+app.post("/consultations/:id/end-call", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
+    const consultation = await Consultation.findByIdAndUpdate(
+      req.params.id,
+      { status: "completed" },
+      { new: true }
+    );
+
+    const doctorProfile = await Doctor.findOne({ user: req.user._id });
+    await Doctor.findByIdAndUpdate(doctorProfile._id, { isAvailableNow: true });
+
+    res.status(200).json(consultation);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DOCTOR - add prescription
+app.put("/consultations/:id/prescription", isLoggedIn, async (req, res) => {
+  try {
+    if (req.user.role !== "doctor") return res.status(403).json({ error: "Not authorized" });
+    const { notes, medicines } = req.body;
+    const consultation = await Consultation.findByIdAndUpdate(
+      req.params.id,
+      { prescription: { notes, medicines } },
+      { new: true }
+    );
+    res.status(200).json(consultation);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

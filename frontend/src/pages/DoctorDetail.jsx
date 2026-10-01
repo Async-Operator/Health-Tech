@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
+import BookingModal from "../components/BookingModal";
+import { toast } from "react-toastify";
 import { Box, Container, Typography, Grid, Chip, Paper, Divider, Button, Table, TableBody, TableRow, TableCell } from "@mui/material";
 
 function DoctorDetail() {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -17,9 +20,10 @@ function DoctorDetail() {
   const handleBookClick = () => {
     if (!user) {
       navigate("/login");
+    } else if (user.role !== "patient") {
+      toast.error("Only patients can book consultations");
     } else {
-      // open booking modal here later
-      alert("Booking flow coming next");
+      setOpenModal(true);
     }
   };
 
@@ -44,9 +48,7 @@ function DoctorDetail() {
             <Typography variant="h6" color="text.secondary">{doctor.specialty}</Typography>
             <Typography sx={{ marginTop: 1 }}>{doctor.hospital}</Typography>
             <Typography sx={{ marginTop: 1 }}>Experience: {doctor.experience} years</Typography>
-            <Typography sx={{ marginTop: 1 }}>
-              {loc.city}, {loc.district}, {loc.state}
-            </Typography>
+            <Typography sx={{ marginTop: 1 }}>{loc.city}, {loc.district}, {loc.state}</Typography>
             <Box sx={{ marginTop: 2 }}>
               {doctor.languages?.map((lang) => (
                 <Chip key={lang} label={lang} sx={{ marginRight: 1 }} />
@@ -59,7 +61,6 @@ function DoctorDetail() {
         </Grid>
 
         <Divider sx={{ marginY: 3 }} />
-
         <Typography variant="h6">About</Typography>
         <Typography sx={{ marginTop: 1, color: "text.secondary" }}>
           {doctor.description || "No description added yet."}
@@ -76,7 +77,6 @@ function DoctorDetail() {
         )}
 
         <Divider sx={{ marginY: 3 }} />
-
         <Typography variant="h6">Availability</Typography>
         <Table sx={{ marginTop: 1 }}>
           <TableBody>
@@ -89,6 +89,10 @@ function DoctorDetail() {
           </TableBody>
         </Table>
       </Paper>
+
+      {doctor && (
+        <BookingModal open={openModal} onClose={() => setOpenModal(false)} doctor={doctor} />
+      )}
     </Container>
   );
 }

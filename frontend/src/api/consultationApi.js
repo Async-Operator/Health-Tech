@@ -1,12 +1,5 @@
-import axios from "axios";
+import axiosClient from "./axiosClient";
 
-axios.defaults.withCredentials = true; 
-const axiosClient = axios.create({
-  baseURL: "http://localhost:5000",
-  withCredentials: true
-});
-
-export default axiosClient;
 export const bookConsultation = (data) => axiosClient.post("/consultations", data);
 export const getPatientConsultations = () => axiosClient.get("/patient/consultations");
 export const getDoctorConsultations = () => axiosClient.get("/doctor/consultations");
